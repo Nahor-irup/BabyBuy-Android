@@ -1,4 +1,4 @@
-package com.rohan.babybuy;
+package com.rohan.babybuy.dashboard;
 
 import android.os.Bundle;
 
@@ -8,9 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class PurchasedFragment extends Fragment {
-    public static PurchasedFragment newInstance() {
-        PurchasedFragment fragment = new PurchasedFragment();
+import com.rohan.babybuy.R;
+
+public class AddProductsFragment extends Fragment {
+
+    public static AddProductsFragment newInstance() {
+        AddProductsFragment fragment = new AddProductsFragment();
         return fragment;
     }
 
@@ -23,6 +26,6 @@ public class PurchasedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_purchased, container, false);
+        return inflater.inflate(R.layout.fragment_add_products, container, false);
     }
 }

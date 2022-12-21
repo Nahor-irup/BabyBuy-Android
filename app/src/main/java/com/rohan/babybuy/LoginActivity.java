@@ -13,9 +13,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rohan.babybuy.dashboard.DashboardActivity;
 import com.rohan.babybuy.db.BabyBuyDatabase;
 import com.rohan.babybuy.db.User;
 import com.rohan.babybuy.db.UserDao;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class LoginActivity extends AppCompatActivity {
     private TextView reg;
@@ -47,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String email=em.getText().toString().trim();
                 String password=pass.getText().toString().trim();
+                String hashPassword = md5(password).trim();
 
 
                 BabyBuyDatabase babyBuyDatabase = Room.databaseBuilder(getApplicationContext(),
@@ -56,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        User user=userDao.getUser(email,password);
+                        User user=userDao.getUser(email,hashPassword    );
                         if(user==null){
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -78,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                                    editor.putBoolean("is_logged_in",true);
                                    editor.apply();
 
-                                   Intent intent =new Intent(LoginActivity.this,DashboardActivity.class);
+                                   Intent intent =new Intent(LoginActivity.this, DashboardActivity.class);
                                    startActivity(intent);
                                    finish();
                                }
@@ -88,6 +93,23 @@ public class LoginActivity extends AppCompatActivity {
                 }).start();
             }
         });
+    }
+    public String md5(String s) {
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
 
+            // Create Hex String
+            StringBuffer hexString = new StringBuffer();
+            for (int i=0; i<messageDigest.length; i++)
+                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

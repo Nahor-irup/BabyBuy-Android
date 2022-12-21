@@ -11,6 +11,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.rohan.babybuy.dashboard.DashboardActivity;
+
 public class SplashScreenActivity extends AppCompatActivity {
     private ImageView img;
     @Override
@@ -39,7 +41,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         Intent intent;
         if(isLoggedIn){
-            intent = new Intent(SplashScreenActivity.this,DashboardActivity.class);
+            intent = new Intent(SplashScreenActivity.this, DashboardActivity.class);
         }else {
             intent = new Intent(SplashScreenActivity.this,LoginActivity.class);
         }

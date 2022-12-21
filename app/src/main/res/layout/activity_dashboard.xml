@@ -1,53 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray10"
-    tools:context=".DashboardActivity">
+    tools:context=".dashboard.DashboardActivity">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_container_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_nav_view"
-        />
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_container_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_nav_view"
+            />
+<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--            android:id="@+id/btnAdd"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="bottom|end"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            android:layout_marginBottom="66dp"-->
+<!--            android:backgroundTint="@color/white"-->
+<!--            android:contentDescription="addItem"-->
+<!--            android:src="@drawable/icon_add"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent" />-->
 
-    <ImageView
-        android:id="@+id/imgMom"
-        android:layout_width="260dp"
-        android:layout_height="260dp"
-        android:background="@drawable/mother_baby"
-        app:layout_constraintBottom_toBottomOf="@+id/bottom_nav_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/fragment_container_view" />
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnLogOut"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/imgMom"
-        app:layout_constraintEnd_toEndOf="@+id/imgMom"
-        app:layout_constraintTop_toBottomOf="@id/imgMom"
-        android:text="LogOut"
-        android:background="@drawable/edittext_bg"
-        android:backgroundTint="@color/teal_700"
-        android:textColor="@color/white"
-        android:layout_gravity="center"
-        android:layout_marginTop="50dp"
-        />
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav_view"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_nav_menu"
-        />
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_nav_view"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/bottom_nav_menu"
+            />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

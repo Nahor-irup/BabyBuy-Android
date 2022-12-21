@@ -1,4 +1,4 @@
-package com.rohan.babybuy;
+package com.rohan.babybuy.dashboard;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,11 +15,13 @@ import android.view.View;
 import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.rohan.babybuy.LoginActivity;
+import com.rohan.babybuy.R;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    private Button btnLogOut;
     private BottomNavigationView bottomNavigationView;
 
     private HomeFragment homeFragment;
@@ -36,7 +38,6 @@ public class DashboardActivity extends AppCompatActivity {
         homeFragment =HomeFragment.newInstance();
         purchasedFragment = PurchasedFragment.newInstance();
         profileFragment  = ProfileFragment.newInstance();
-
         replaceFragment(homeFragment);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -60,32 +61,9 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-        btnLogOut = (Button) findViewById(R.id.btnLogOut);
-
-        btnLogOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-        btnLogOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences sharedPreferences = getSharedPreferences("Login_pref", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-//                editor.remove("user_name");   //remove single value
-                editor.clear();     //clear every value
-                editor.apply();
-
-                startActivity(new Intent(DashboardActivity.this,LoginActivity.class));
-                finish();
-            }
-        });
-
     }
 
-    private void replaceFragment(Fragment fragment){
+    public void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container_view,fragment);
