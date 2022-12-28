@@ -43,6 +43,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="Title"
+            android:textColor="#272727"
             android:textStyle="bold"
             android:textSize="26sp"
             android:gravity="center"
@@ -55,6 +56,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem "
+            android:textColor="#272727"
             android:ellipsize="end"
             android:maxLines="3"
             />

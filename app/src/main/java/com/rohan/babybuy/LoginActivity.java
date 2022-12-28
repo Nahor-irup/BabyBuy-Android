@@ -1,5 +1,6 @@
 package com.rohan.babybuy;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
@@ -7,12 +8,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthCredential;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.rohan.babybuy.dashboard.DashboardActivity;
 import com.rohan.babybuy.db.BabyBuyDatabase;
 import com.rohan.babybuy.db.User;
@@ -24,7 +34,8 @@ import java.security.NoSuchAlgorithmException;
 public class LoginActivity extends AppCompatActivity {
     private TextView reg;
     private Button btnLogin;
-    private EditText em,pass;
+    private EditText textBoxEmail,textBoxPass;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +45,9 @@ public class LoginActivity extends AppCompatActivity {
 
         reg=(TextView) findViewById(R.id.txtRegisterLink);;
         btnLogin=(Button) findViewById(R.id.btnLogin);
-        em=(EditText) findViewById(R.id.txtBoxEmail);
-        pass=(EditText) findViewById(R.id.txtBoxPassword);
+        textBoxEmail=(EditText) findViewById(R.id.txtBoxEmail);
+        textBoxPass=(EditText) findViewById(R.id.txtBoxPassword);
+        firebaseAuth = FirebaseAuth.getInstance();
 
         reg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,67 +61,39 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email=em.getText().toString().trim();
-                String password=pass.getText().toString().trim();
-                String hashPassword = md5(password).trim();
+                String email=textBoxEmail.getText().toString().trim();
+                String password=textBoxPass.getText().toString().trim();
 
-
-                BabyBuyDatabase babyBuyDatabase = Room.databaseBuilder(getApplicationContext(),
-                    BabyBuyDatabase.class,"BabyBuy.db").build();
-                UserDao userDao= babyBuyDatabase.getUserDao();
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        User user=userDao.getUser(email,hashPassword    );
-                        if(user==null){
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getApplicationContext(), "Invalid Credentials!!", Toast.LENGTH_SHORT).show();
+                if(!email.isEmpty()&&Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                    if(!password.isEmpty()){
+                        firebaseAuth.signInWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult authResult) {
+                                FirebaseUser user = firebaseAuth.getCurrentUser();
+                                if(user.isEmailVerified()){
+                                    Toast.makeText(LoginActivity.this, "Login Successfully.", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(LoginActivity.this,DashboardActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }else{
+                                    Toast.makeText(LoginActivity.this, "Please verify your email!!", Toast.LENGTH_SHORT).show();
                                 }
-                            });
-                        }else{
-                           runOnUiThread(new Runnable() {
-                               @Override
-                               public void run() {
-                                   Toast.makeText(LoginActivity.this, "Login Success.", Toast.LENGTH_SHORT).show();
-
-                                   SharedPreferences sharedPreferences = getSharedPreferences("Login_pref", Context.MODE_PRIVATE);
-                                   SharedPreferences.Editor editor = sharedPreferences.edit();
-                                   editor.putString("user_name", user.username);
-                                   editor.putString("user_email",email);
-                                   editor.putString("user_password",password);
-                                   editor.putBoolean("is_logged_in",true);
-                                   editor.apply();
-
-                                   Intent intent =new Intent(LoginActivity.this, DashboardActivity.class);
-                                   startActivity(intent);
-                                   finish();
-                               }
-                           });
-                        }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(LoginActivity.this, "Invalid Credential!!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }else{
+                        textBoxPass.setError("Password cannot be empty!!");
                     }
-                }).start();
+                }else if(email.isEmpty()){
+                    textBoxEmail.setError("Email cannot be empty!!");
+                }else {
+                    textBoxEmail.setError("Invalid email format!!");
+                }
             }
         });
-    }
-    public String md5(String s) {
-        try {
-            // Create MD5 Hash
-            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-            digest.update(s.getBytes());
-            byte messageDigest[] = digest.digest();
-
-            // Create Hex String
-            StringBuffer hexString = new StringBuffer();
-            for (int i=0; i<messageDigest.length; i++)
-                hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
-            return hexString.toString();
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return "";
     }
 }

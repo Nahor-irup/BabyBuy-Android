@@ -17,6 +17,7 @@ import android.widget.Button;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.rohan.babybuy.LoginActivity;
 import com.rohan.babybuy.R;
 
@@ -40,6 +41,7 @@ public class DashboardActivity extends AppCompatActivity {
         profileFragment  = ProfileFragment.newInstance();
         replaceFragment(homeFragment);
 
+
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -47,13 +49,16 @@ public class DashboardActivity extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.home:
                         replaceFragment(homeFragment);
-                        break;
+                        return true;
+//                        break;
                     case R.id.purchased:
                         replaceFragment(purchasedFragment);
-                        break;
+                        return true;
+//                        break;
                     case R.id.profile:
                         replaceFragment(profileFragment);
-                        break;
+                        return true;
+//                        break;
                     default:
                         break;
                 }

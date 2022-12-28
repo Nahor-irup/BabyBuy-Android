@@ -21,4 +21,13 @@ public class User {
     @ColumnInfo(name = "password")
     @NonNull
     public String password;
+
+    public User() {
+    }
+
+    public User(@NonNull String username, @NonNull String email, @NonNull String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 }

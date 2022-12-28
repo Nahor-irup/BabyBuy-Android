@@ -11,10 +11,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.rohan.babybuy.dashboard.DashboardActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
     private ImageView img;
+    private FirebaseAuth firebaseAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +24,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         img=(ImageView) findViewById(R.id.loader);
+        firebaseAuth = FirebaseAuth.getInstance();
 
         loader();
 
@@ -35,12 +38,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void checkUserLogin(){
-        SharedPreferences sharedPreferences = getSharedPreferences("Login_pref", Context.MODE_PRIVATE);
-        boolean defaultValue = false;
-        boolean isLoggedIn = sharedPreferences.getBoolean("is_logged_in",defaultValue);
-
         Intent intent;
-        if(isLoggedIn){
+        if(firebaseAuth.getCurrentUser()!=null){
             intent = new Intent(SplashScreenActivity.this, DashboardActivity.class);
         }else {
             intent = new Intent(SplashScreenActivity.this,LoginActivity.class);

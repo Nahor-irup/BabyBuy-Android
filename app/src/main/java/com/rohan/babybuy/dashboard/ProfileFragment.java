@@ -14,11 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.rohan.babybuy.LoginActivity;
 import com.rohan.babybuy.R;
 
 public class ProfileFragment extends Fragment {
     private Button btnLogOut;
+    private FirebaseAuth firebaseAuth;
 
     public static ProfileFragment newInstance() {
         ProfileFragment fragment = new ProfileFragment();
@@ -36,13 +38,7 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         btnLogOut = view.findViewById(R.id.btnLogOut);
-
-        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("Login_pref", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-//                editor.remove("user_name");   //remove single value
-        editor.clear();     //clear every value
-        editor.apply();
-
+        firebaseAuth = FirebaseAuth.getInstance();
         return view;
     }
 
@@ -52,6 +48,7 @@ public class ProfileFragment extends Fragment {
         btnLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                firebaseAuth.signOut();
                 startActivity(new Intent(requireActivity(), LoginActivity.class));
                 requireActivity().finish();
             }
