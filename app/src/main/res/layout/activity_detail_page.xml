@@ -86,6 +86,7 @@
             android:src="@drawable/icon_edit"
             app:fab_showShadow="true"
             app:fab_colorNormal="@color/green"
+            app:fab_colorPressed="@color/green100"
             app:fab_size="mini"/>
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/btnDelete"

@@ -43,7 +43,6 @@ public class HomeFragment extends Fragment implements HomeRecyclerViewAdapter.IH
     private FloatingActionButton btnAdd;
     private RecyclerView homeRecyclerView;
     private ImageView img;
-    private AddProductFragment addProductFragment;
     private TextView txtUsername;
     private DatabaseReference databaseReference;
     private ValueEventListener eventListener;
@@ -71,7 +70,6 @@ public class HomeFragment extends Fragment implements HomeRecyclerViewAdapter.IH
         homeRecyclerView = view.findViewById(R.id.recycler_view_home);
         img = view.findViewById(R.id.imgMom);
         txtUsername = view.findViewById(R.id.txtUsername);
-        addProductFragment = AddProductFragment.newInstance();
         searchView = view.findViewById(R.id.search);
         firebaseAuth = FirebaseAuth.getInstance();
         return view;

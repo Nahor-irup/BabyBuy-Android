@@ -10,39 +10,50 @@ import java.util.List;
 @Entity(tableName = "product")
 public class Product implements Serializable {
     @PrimaryKey(autoGenerate = true)
-    public int productId;
+    public int id;
 
     @ColumnInfo(name = "title")
     public String title;
 
-    @ColumnInfo(name="description")
+    @ColumnInfo(name = "description")
     public String description;
 
     @ColumnInfo(name = "image")
     public String images;
 
-    @ColumnInfo(name = "location")
-    public int plId;
+    @ColumnInfo(name = "latitude")
+    public Double latitude;
+
+    @ColumnInfo(name = "longitude")
+    public Double longitude;
+
+    @ColumnInfo(name = "address")
+    public String address;
 
     @ColumnInfo(name = "isPurchased")
-    public boolean isPurchased;
+    public Boolean isPurchased;
+
+    @ColumnInfo(name = "date")
+    public String date;
 
     @ColumnInfo(name = "key")
     public String key;
 
 
-    public Product(){}
-    public Product(String title, String description, String images, int plId, boolean isPurchased) {
+    public Product() {
+    }
+
+    public Product(String title, String description, String images, Double latitude, Double longitude, String address, Boolean isPurchased, String date) {
         this.title = title;
         this.description = description;
         this.images = images;
-        this.plId = plId;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.address = address;
         this.isPurchased = isPurchased;
+        this.date = date;
     }
 
-    public int getProductId() {
-        return productId;
-    }
 
     public String getTitle() {
         return title;
@@ -56,9 +67,6 @@ public class Product implements Serializable {
         return images;
     }
 
-    public int getPlId() {
-        return plId;
-    }
 
     public boolean isPurchased() {
         return isPurchased;
@@ -66,5 +74,15 @@ public class Product implements Serializable {
 
     public String getKey() {return key;}
 
-    public void setKey(String key) {this.key = key;}
+    public double getLatitude() {return latitude;}
+
+    public double getLongitude() {return longitude;}
+
+    public String getAddress() {return address;}
+
+    public String getDate() {return date;}
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 }

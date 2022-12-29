@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -32,10 +33,14 @@ import com.google.firebase.storage.UploadTask;
 import com.rohan.babybuy.R;
 import com.rohan.babybuy.db.Product;
 
+import java.text.DateFormat;
+import java.util.Calendar;
+
 public class UpdateProductActivity extends AppCompatActivity {
     private ImageView updateImage;
     private Button btnUpdate,btnCancel;
-    private EditText updateTitle, updateDesc;
+    private EditText updateTitle, updateDesc,txtBoxUpdateLocation;
+    private TextView txtLatitude,txtLongitude;
     private String title, desc;
     private String key,imageUrl,oldImageUrl;
     private Uri uri;
@@ -51,8 +56,12 @@ public class UpdateProductActivity extends AppCompatActivity {
         updateImage = findViewById(R.id.imgUpdate);
         updateTitle = findViewById(R.id.txtBoxUpdateTitle);
         updateDesc = findViewById(R.id.txtBoxUpdateDescription);
+        txtBoxUpdateLocation = findViewById(R.id.txtBoxUpdateLocation);
         btnUpdate = findViewById(R.id.btnUpdate);
         btnCancel = findViewById(R.id.btnCancel);
+        txtLatitude = findViewById(R.id.txtUpdateLatitude);
+        txtLongitude = findViewById(R.id.txtUpdateLongitude);
+
 
         ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -135,12 +144,17 @@ public class UpdateProductActivity extends AppCompatActivity {
     }
 
     public void updateData(){
+        String address,currentDate;
+        Double latitude,longitude;
         title = updateTitle.getText().toString();
         desc = updateDesc.getText().toString();
-        Integer plId = 1;
+        latitude = Double.valueOf(txtLatitude.getText().toString());
+        longitude = Double.valueOf(txtLongitude.getText().toString());
+        address = txtBoxUpdateLocation.getText().toString();
         Boolean isPurchased = false;
+        currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
 
-        Product product = new Product(title,desc,imageUrl,plId,isPurchased);
+        Product product = new Product(title, desc, imageUrl,latitude,longitude ,address, isPurchased,currentDate);
 
         databaseReference.setValue(product).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

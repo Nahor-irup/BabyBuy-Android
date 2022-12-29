@@ -14,7 +14,7 @@ public interface ProductDao {
     @Insert
     void insertProduct(Product product);
 
-    @Query("select * from product where productId=:productId Limit 1")
+    @Query("select * from product where id=:productId Limit 1")
     Product getProduct(Integer productId);
 
     @Query("select * from product where title=:title Limit 1")

@@ -76,10 +76,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 String latValue = binding.txtLatitude.getText().toString();
                 String longValue = binding.txtLongitude.getText().toString();
 
-                Intent intent = new Intent(requireActivity(), AddProductActivity.class);
+                Intent intent = new Intent(requireActivity(), AddProductActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("latitude", latValue);
                 intent.putExtra("longitude", longValue);
                 intent.putExtra("address", fullAddress);
+
                 startActivity(intent);
             }
         });
@@ -187,10 +188,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                                         b = params.getDouble("longitude");
                                         latLng = new LatLng(a, b);
                                     }else{
-                                        latLng = new LatLng(27.7172,  85.3240);
+                                        latLng = new LatLng(location.getLatitude(),  location.getLongitude());
                                     }
                                 }else {
-                                    latLng = new LatLng(27.6710, 85.4298);
+                                    latLng = new LatLng(location.getLatitude(),  location.getLongitude());
                                 }
 
                                 if (marker != null) {
