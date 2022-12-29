@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,9 +47,10 @@ public class HomeFragment extends Fragment implements HomeRecyclerViewAdapter.IH
     private TextView txtUsername;
     private DatabaseReference databaseReference;
     private ValueEventListener eventListener;
-    List<Product> productList = new ArrayList<>();
-    SearchView searchView;
-    HomeRecyclerViewAdapter adapter;
+    private List<Product> productList = new ArrayList<>();
+    private SearchView searchView;
+    private HomeRecyclerViewAdapter adapter;
+    private FirebaseAuth firebaseAuth;
 
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
@@ -71,6 +73,7 @@ public class HomeFragment extends Fragment implements HomeRecyclerViewAdapter.IH
         txtUsername = view.findViewById(R.id.txtUsername);
         addProductFragment = AddProductFragment.newInstance();
         searchView = view.findViewById(R.id.search);
+        firebaseAuth = FirebaseAuth.getInstance();
         return view;
     }
 
@@ -91,8 +94,10 @@ public class HomeFragment extends Fragment implements HomeRecyclerViewAdapter.IH
     }
 
     private void getUsername(){
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Login_pref",Context.MODE_PRIVATE);
-        txtUsername.setText(sharedPreferences.getString("user_name",""));
+//        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Login_pref",Context.MODE_PRIVATE);
+//        txtUsername.setText(sharedPreferences.getString("user_name",""));
+        String username = firebaseAuth.getCurrentUser().getUid();
+        txtUsername.setText(username);
     }
 
     private void setUpHomeRecyclerView(){

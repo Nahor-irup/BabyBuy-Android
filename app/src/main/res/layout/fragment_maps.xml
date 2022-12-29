@@ -26,19 +26,20 @@
             android:layout_weight="7">
 
             <EditText
-                android:id="@+id/searchEdt"
+                android:id="@+id/searchLocation"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:background="@drawable/textbox_bg"
-                android:drawableTint="@android:color/holo_blue_dark"
-                android:textSize="16sp"
                 android:drawableStart="@drawable/icon_location"
                 android:drawablePadding="10dp"
+                android:drawableTint="@android:color/holo_blue_dark"
                 android:hint="Search Your Location"
                 android:imeOptions="actionSearch"
                 android:paddingStart="10dp"
                 android:singleLine="true"
-                android:textColorHint="@android:color/darker_gray"/>
+                android:textColorHint="@android:color/darker_gray"
+                android:textSize="16sp"
+                tools:ignore="TouchTargetSizeCheck" />
         </FrameLayout>
 
     </LinearLayout>
@@ -97,6 +98,15 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="5dp"/>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSaveMap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/blue"
+            />
     </LinearLayout>
 
 

@@ -31,6 +31,8 @@ import com.google.firebase.storage.UploadTask;
 import com.rohan.babybuy.R;
 import com.rohan.babybuy.db.Product;
 
+import org.w3c.dom.Text;
+
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,7 +40,7 @@ import java.util.Date;
 public class AddProductActivity extends AppCompatActivity {
     private Button btnSave,btnCancel,btnLocation;
     private ImageView uploadImage;
-    private EditText txtBoxTitle,txtBoxDescription;
+    private EditText txtBoxTitle,txtBoxDescription,txtBoxLocation;
     private Uri uri;
     String imageUrl;
     private FirebaseDatabase firebaseDatabase;
@@ -56,6 +58,7 @@ public class AddProductActivity extends AppCompatActivity {
         uploadImage = findViewById(R.id.imgUpload);
         txtBoxTitle = findViewById(R.id.txtBoxTitle);
         txtBoxDescription = findViewById(R.id.txtBoxDescription);
+        txtBoxLocation = findViewById(R.id.txtBoxLocation);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("product");
 
@@ -97,13 +100,36 @@ public class AddProductActivity extends AppCompatActivity {
             }
         });
 
+
+
+        txtBoxLocation.setText(getFromIntent().getStringExtra("address"));
+
         btnLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AddProductActivity.this,MapActivity.class);
+               if(getFromIntent().getExtras()!=null){
+//                   intent.putExtra("latitude",getFromIntent().getStringExtra("location"));
+//                   intent.putExtra("longitude",getFromIntent().getStringExtra("longitude"));
+//                   CharSequence s2 = getFromIntent().getStringExtra("address");
+                   Bundle params = new Bundle();
+                   Double l,lt;
+
+                   l = Double.valueOf(getFromIntent().getStringExtra("latitude"));
+                   lt = Double.valueOf(getFromIntent().getStringExtra("longitude"));
+                    params.putDouble("latitude",l);
+                    params.putDouble("longitude",lt);
+                   intent.putExtras(params);
+               }
                 startActivity(intent);
             }
         });
+
+    }
+
+    public Intent getFromIntent(){
+        Intent intent = getIntent();
+        return intent;
     }
 
     public void saveData(){
