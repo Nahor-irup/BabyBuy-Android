@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -45,9 +46,9 @@ public class AddProductActivity extends AppCompatActivity {
     private Button btnSave, btnCancel, btnLocation;
     private ImageView uploadImage;
     private EditText txtBoxTitle, txtBoxDescription, txtBoxLocation;
-    private TextView txtLatitude,txtLongitude;
+    private TextView txtLatitude, txtLongitude;
     private Uri uri;
-    String imageUrl;
+    private String imageUrl = "";
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
 
@@ -71,20 +72,6 @@ public class AddProductActivity extends AppCompatActivity {
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("product");
 
-        ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            Intent data = result.getData();
-                            uri = data.getData();
-                            uploadImage.setImageURI(uri);
-                        } else {
-                            Toast.makeText(AddProductActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
 
         //image uploader
         uploadImage.setOnClickListener(new View.OnClickListener() {
@@ -92,23 +79,23 @@ public class AddProductActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent photoPicker = new Intent(Intent.ACTION_PICK);
                 photoPicker.setType("image/*");
-                activityResultLauncher.launch(photoPicker);
+//                activityResultLauncher.launch(photoPicker);
+                startActivityForResult(Intent.createChooser(photoPicker, "Please select an image."), 101);
             }
         });
 
-        //set latitude, longitude and address text box
-        txtBoxLocation.setText(getFromIntent().getStringExtra("address"));
-        txtLatitude.setText(getFromIntent().getStringExtra("latitude"));
-        txtLongitude.setText(getFromIntent().getStringExtra("longitude"));
-
-        loadFromSharedPref();
+//        loadFromSharedPref();
 
         //save button action
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveData();
-                clearSharedPref();
+                if (uri == null) {
+                    uploadData();
+                } else {
+                    saveData();
+                }
+//                clearSharedPref();
                 setResult(2001);
             }
         });
@@ -117,7 +104,7 @@ public class AddProductActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clearSharedPref();
+
                 finish();
             }
         });
@@ -127,42 +114,45 @@ public class AddProductActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AddProductActivity.this, MapActivity.class);
-                if (getFromIntent().getExtras() != null) {
-                    Bundle params = new Bundle();
-                    Double l, lt;
 
-                    l = Double.valueOf(getFromIntent().getStringExtra("latitude"));
-                    lt = Double.valueOf(getFromIntent().getStringExtra("longitude"));
-                    params.putDouble("latitude", l);
-                    params.putDouble("longitude", lt);
+                Double latitude, longitude;
+                String lat, lon;
+                lat = txtLatitude.getText().toString();
+                lon = txtLongitude.getText().toString();
+                if (!lat.equals("") && !lon.equals("")) {
+                    latitude = Double.valueOf(lat);
+                    longitude = Double.valueOf(lon);
+
+                    Bundle params = new Bundle();
+                    params.putDouble("latitude", latitude);
+                    params.putDouble("longitude", longitude);
+//                    params.putString("page","product_add");
                     intent.putExtras(params);
                 }
-                SharedPreferences sharedPreferences = getSharedPreferences("product_pref", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("product_title", txtBoxTitle.getText().toString());
-                editor.putString("product_description", txtBoxDescription.getText().toString());
-                editor.apply();
 
-                startActivity(intent);
+                startActivityForResult(intent, 102);
             }
         });
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 101 && resultCode == RESULT_OK) {
+//            Intent data = result.getData();
+            uri = data.getData();
+            uploadImage.setImageURI(uri);
+        } else if (requestCode == 102 && resultCode == 202) {
+            //set latitude, longitude and address text box
+            txtBoxLocation.setText(data.getStringExtra("address"));
+            txtLatitude.setText(data.getStringExtra("latitude"));
+            txtLongitude.setText(data.getStringExtra("longitude"));
+        }
     }
 
     public Intent getFromIntent() {
         Intent intent = getIntent();
         return intent;
-    }
-
-    public void loadFromSharedPref(){
-        SharedPreferences sharedPreferences = getSharedPreferences("product_pref", Context.MODE_PRIVATE);
-        txtBoxTitle.setText(sharedPreferences.getString("product_title",""));
-        txtBoxDescription.setText(sharedPreferences.getString("product_description",""));
-    }
-
-    public void clearSharedPref(){
-        SharedPreferences sharedPreferences = getSharedPreferences("product_pref", Context.MODE_PRIVATE);
-        sharedPreferences.edit().clear().apply();
     }
 
     public void saveData() {
@@ -192,17 +182,25 @@ public class AddProductActivity extends AppCompatActivity {
     }
 
     public void uploadData() {
-        String title,desc,address,currentDate;
-        Double latitude,longitude;
+        String title, desc, address, currentDate,lat,lon;
+        Double latitude, longitude;
         title = txtBoxTitle.getText().toString();
         desc = txtBoxDescription.getText().toString();
-        latitude = Double.valueOf(txtLatitude.getText().toString());
-        longitude = Double.valueOf(txtLongitude.getText().toString());
         address = txtBoxLocation.getText().toString();
         Boolean isPurchased = false;
         currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        lat = txtLatitude.getText().toString();
+        lon = txtLongitude.getText().toString();
+        if(!lat.equals("")&&!lon.equals("")){
+            latitude = Double.valueOf(lat);
+            longitude = Double.valueOf(lon);
+        }else{
+            latitude = 0.0;
+            longitude = 0.0;
+        }
 
-        Product product = new Product(title, desc, imageUrl,latitude,longitude ,address, isPurchased,currentDate);
+
+        Product product = new Product(title, desc, imageUrl, latitude, longitude, address, isPurchased, currentDate);
 
         databaseReference.child(currentDate).setValue(product).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

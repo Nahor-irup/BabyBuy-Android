@@ -5,6 +5,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -35,14 +36,16 @@ import com.rohan.babybuy.db.Product;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class UpdateProductActivity extends AppCompatActivity {
     private ImageView updateImage;
-    private Button btnUpdate,btnCancel;
+    private Button btnUpdate,btnCancel,btnLocation;
     private EditText updateTitle, updateDesc,txtBoxUpdateLocation;
     private TextView txtLatitude,txtLongitude;
     private String title, desc;
-    private String key,imageUrl,oldImageUrl;
+    private String key,oldImageUrl;
+    private String imageUrl = "";
     private Uri uri;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
@@ -59,29 +62,16 @@ public class UpdateProductActivity extends AppCompatActivity {
         txtBoxUpdateLocation = findViewById(R.id.txtBoxUpdateLocation);
         btnUpdate = findViewById(R.id.btnUpdate);
         btnCancel = findViewById(R.id.btnCancel);
+        btnLocation = findViewById(R.id.btnLocation);
         txtLatitude = findViewById(R.id.txtUpdateLatitude);
         txtLongitude = findViewById(R.id.txtUpdateLongitude);
 
 
-        ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if(result.getResultCode()== Activity.RESULT_OK){
-                            Intent data = result.getData();
-                            uri = data.getData();
-                            updateImage.setImageURI(uri);
-                        }else{
-                            Toast.makeText(UpdateProductActivity.this, "No image selected!!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-        );
-
         Bundle bundle = getIntent().getExtras();
         if(bundle!=null){
-            Glide.with(UpdateProductActivity.this).load(bundle.getString("Image")).into(updateImage);
+            if(!bundle.getString("Image").equals("")){
+                Glide.with(UpdateProductActivity.this).load(bundle.getString("Image")).into(updateImage);
+            }
             updateTitle.setText(bundle.getString("Title"));
             updateDesc.setText(bundle.getString("Description"));
             key = bundle.getString("Key");
@@ -89,25 +79,56 @@ public class UpdateProductActivity extends AppCompatActivity {
         }
         databaseReference = FirebaseDatabase.getInstance().getReference("product").child(key);
 
+        //image uploader action
         updateImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent photoPicker = new Intent(Intent.ACTION_PICK);
                 photoPicker.setType("image/*");
-                activityResultLauncher.launch(photoPicker);
+                startActivityForResult(Intent.createChooser(photoPicker,"Please select an image."),101);
             }
         });
 
+        //button update action
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveData();
+                if(uri!=null) {
+                    if(!oldImageUrl.equals(""))
+                    {
+                        updateData();
+                    }else{
+                        saveData();
+                    }
+                }else{
+                    updateData();
+                }
 
                 Intent intent = new Intent(UpdateProductActivity.this,DashboardActivity.class);
                 startActivity(intent);
             }
         });
 
+        //btn location action
+        btnLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UpdateProductActivity.this,MapActivity.class);
+                Double latitude, longitude;
+                if(bundle!=null){
+                    Bundle params = new Bundle();
+                    latitude = Double.valueOf(bundle.getString("Latitude"));
+                    longitude = Double.valueOf(bundle.getString("Longitude"));
+                    params.putDouble("latitude", latitude);
+                    params.putDouble("longitude", longitude);
+                    params.putString("page","product_update");
+                    intent.putExtras(params);
+                }
+                startActivityForResult(intent,301);
+            }
+        });
+
+        //btn cancel action
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,16 +136,28 @@ public class UpdateProductActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 101&& resultCode ==RESULT_OK) {
+//            Intent data = result.getData();
+            uri = data.getData();
+            updateImage.setImageURI(uri);
+        }else if(requestCode==301 && resultCode==202){
+            txtBoxUpdateLocation.setText(data.getStringExtra("address"));
+            txtLatitude.setText(data.getStringExtra("latitude"));
+            txtLongitude.setText(data.getStringExtra("longitude"));
+        }
+    }
 
     public void saveData(){
-        storageReference = FirebaseStorage.getInstance().getReference().child("Images").child(uri.getLastPathSegment());
 
+        storageReference = FirebaseStorage.getInstance().getReference().child("Images").child(uri.getLastPathSegment());
         AlertDialog.Builder builder = new AlertDialog.Builder(UpdateProductActivity.this);
         builder.setCancelable(false);
         builder.setView(R.layout.progress_layout);
         AlertDialog dialog = builder.create();
         dialog.show();
-
         storageReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -144,15 +177,33 @@ public class UpdateProductActivity extends AppCompatActivity {
     }
 
     public void updateData(){
-        String address,currentDate;
+        AlertDialog.Builder builder = new AlertDialog.Builder(UpdateProductActivity.this);
+        builder.setCancelable(false);
+        builder.setView(R.layout.progress_layout);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        String address,currentDate,lat,lon;
         Double latitude,longitude;
         title = updateTitle.getText().toString();
         desc = updateDesc.getText().toString();
-        latitude = Double.valueOf(txtLatitude.getText().toString());
-        longitude = Double.valueOf(txtLongitude.getText().toString());
+//        latitude = Double.valueOf(txtLatitude.getText().toString());
+//        longitude = Double.valueOf(txtLongitude.getText().toString());
+        lat = txtLatitude.getText().toString();
+        lon = txtLongitude.getText().toString();
+        if(!lat.equals("")&&!lon.equals("")){
+            latitude = Double.valueOf(lat);
+            longitude = Double.valueOf(lon);
+        }else{
+            latitude = 0.0;
+            longitude = 0.0;
+        }
         address = txtBoxUpdateLocation.getText().toString();
         Boolean isPurchased = false;
         currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+        if(imageUrl.equals("")){
+            imageUrl=oldImageUrl;
+        }
+
 
         Product product = new Product(title, desc, imageUrl,latitude,longitude ,address, isPurchased,currentDate);
 
@@ -160,9 +211,14 @@ public class UpdateProductActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
-                    StorageReference reference = FirebaseStorage.getInstance().getReferenceFromUrl(oldImageUrl);
-                    reference.delete();
+                    if(uri!=null){
+                        if(!oldImageUrl.equals("")){
+                            StorageReference reference = FirebaseStorage.getInstance().getReferenceFromUrl(oldImageUrl);
+                            reference.delete();
+                        }
+                    }
                     Toast.makeText(UpdateProductActivity.this, "Product updated.", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                     finish();
                 }
             }

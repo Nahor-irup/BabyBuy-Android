@@ -42,16 +42,19 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
 
         Product product = products.get(position);
 //        holder.getProductImage().setImageDrawable(ContextCompat.getDrawable(context,R.drawable.mother_baby));
-        Glide.with(context).load(product.getImages()).into(holder.getProductImage());
+        if(!product.getImages().equals("")){
+            Glide.with(context).load(product.getImages()).into(holder.getProductImage());
+        }
         holder.getProductTitle().setText(product.title);
         holder.getProductDescription().setText(product.description);
+        holder.getProductDate().setText(product.getDate().substring(0,10));
 
         product.key = products.get(holder.getAdapterPosition()).getKey();
 
         holder.getClRootLayout().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Product at "+holder.getAdapterPosition()+" position is clicked", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "Product at "+holder.getAdapterPosition()+" position is clicked", Toast.LENGTH_SHORT).show();
                 listener.onItemClicked(product);
             }
         });

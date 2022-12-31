@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,11 +23,14 @@ import com.rohan.babybuy.R;
 import com.rohan.babybuy.db.Product;
 
 public class DetailPageActivity extends AppCompatActivity {
-private ImageView detailImage;
-private TextView detailTitle,detailDescription;
-private FloatingActionButton btnDelete,btnEdit;
-String key = "";
-String imageUrl = "";
+    private ImageView detailImage;
+    private TextView detailTitle, detailDescription,detailPageDate;
+    private FloatingActionButton btnDelete, btnEdit;
+    private Button btnViewOnMap;
+    String key = "";
+    String imageUrl = "";
+    String latitude,longitude;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,32 +40,48 @@ String imageUrl = "";
         detailImage = findViewById(R.id.detailPageImage);
         detailTitle = findViewById(R.id.detailPageTitle);
         detailDescription = findViewById(R.id.detailPageDescription);
+        detailPageDate = findViewById(R.id.detailPageDate);
         btnDelete = findViewById(R.id.btnDelete);
         btnEdit = findViewById(R.id.btnEdit);
-
-//        Intent intent = getIntent();
-//        Product product = (Product) intent.getSerializableExtra("product_data");
-//        if(intent!=null){
-//            detailTitle.setText(product.title);
-//            detailDescription.setText(product.description);
-//            key = getString(Integer.parseInt(product.key));
-//            Glide.with(this).load(product.getImages()).into(detailImage);
-//        }
+        btnViewOnMap = findViewById(R.id.btnViewOnMap);
 
         Bundle bundle = getIntent().getExtras();
         Product product = (Product) bundle.getSerializable("product_data");
 
-        if(bundle!=null){
-//            detailTitle.setText(bundle.getString("title"));
-//            detailDescription.setText(bundle.getString("description"));
-//            Glide.with(this).load(bundle.getString("image")).into(detailImage);
+        if (product != null) {
             detailTitle.setText(product.getTitle());
-            detailDescription.setText(product.description);
-            key = product.key;
+            detailDescription.setText(product.getDescription());
+            detailPageDate.setText(product.getDate().substring(0,10));
+            key = product.getKey();
             imageUrl = product.getImages();
-            Glide.with(this).load(imageUrl).into(detailImage);
+            if (!imageUrl.equals("")) {
+                Glide.with(this).load(imageUrl).into(detailImage);
+            }
+            latitude = product.getLatitude().toString();
+            longitude = product.getLongitude().toString();
         }
 
+        //button view on map action
+        btnViewOnMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(DetailPageActivity.this,MapActivity.class);
+                Double latitude, longitude;
+
+                if(product!=null){
+                    Bundle params = new Bundle();
+                    latitude = Double.valueOf(product.getLatitude());
+                    longitude = Double.valueOf(product.getLongitude());
+                    params.putDouble("latitude", latitude);
+                    params.putDouble("longitude", longitude);
+                    params.putString("page","product_detail");
+                    intent.putExtras(params);
+                }
+                startActivity(intent);
+            }
+        });
+        //button delete action
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,14 +90,17 @@ String imageUrl = "";
             }
         });
 
+        //button edit action
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DetailPageActivity.this,UpdateProductActivity.class)
-                        .putExtra("Title",detailTitle.getText().toString())
-                        .putExtra("Description",detailDescription.getText().toString())
-                        .putExtra("Image",imageUrl)
-                        .putExtra("Key",key);
+                Intent intent = new Intent(DetailPageActivity.this, UpdateProductActivity.class)
+                        .putExtra("Title", detailTitle.getText().toString())
+                        .putExtra("Description", detailDescription.getText().toString())
+                        .putExtra("Latitude",latitude)
+                        .putExtra("Longitude",longitude)
+                        .putExtra("Image", imageUrl)
+                        .putExtra("Key", key);
                 startActivity(intent);
             }
         });
@@ -87,9 +110,11 @@ String imageUrl = "";
 //        finish();
     }
 
-
-    private AlertDialog AskOption()
-    {
+    public Intent getFromIntent() {
+        Intent intent = getIntent();
+        return intent;
+    }
+    private AlertDialog AskOption() {
         AlertDialog myQuittingDialogBox = new AlertDialog.Builder(this)
                 // set message, title, and icon
                 .setTitle("Delete")
@@ -100,14 +125,15 @@ String imageUrl = "";
                     public void onClick(DialogInterface dialog, int whichButton) {
                         final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("product");
                         FirebaseStorage storage = FirebaseStorage.getInstance();
-
-                        StorageReference storageReference = storage.getReferenceFromUrl(imageUrl);
-                        storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        if (!imageUrl.equals("")) {
+                            StorageReference storageReference = storage.getReferenceFromUrl(imageUrl);
+                            storageReference.delete();
+                        }
+                        reference.child(key).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                reference.child(key).removeValue();
                                 Toast.makeText(DetailPageActivity.this, "Product deleted.", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(),DashboardActivity.class));
+                                startActivity(new Intent(getApplicationContext(), DashboardActivity.class));
                                 finish();
                             }
                         });

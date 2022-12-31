@@ -99,9 +99,6 @@ public class HomeFragment extends Fragment implements HomeRecyclerViewAdapter.IH
     }
 
     private void setUpHomeRecyclerView(){
-//        HomeRecyclerViewAdapter adapter = new HomeRecyclerViewAdapter(requireActivity(),getProductList(),this);
-//        homeRecyclerView.setAdapter(adapter);
-//        homeRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(),1);
         homeRecyclerView.setLayoutManager(gridLayoutManager);
@@ -197,16 +194,15 @@ public class HomeFragment extends Fragment implements HomeRecyclerViewAdapter.IH
             //add product
             if(resultCode==2001){
                 //add success
-                System.out.println("Hello");
-                Toast.makeText(requireActivity(), "success 2001", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(requireActivity(), "success 2001", Toast.LENGTH_SHORT).show();
             }else{
                 //add failed
-                Toast.makeText(requireActivity(), "failed 2001", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(requireActivity(), "failed 2001", Toast.LENGTH_SHORT).show();
             }
         }else if(requestCode==1002){
             //detail page
             if(resultCode==2002){
-                Toast.makeText(requireActivity(), "202", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(requireActivity(), "202 image", Toast.LENGTH_SHORT).show();
             }
         }
     }

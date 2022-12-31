@@ -55,32 +55,23 @@ public class Product implements Serializable {
     }
 
 
-    public String getTitle() {
-        return title;
-    }
+    public String getTitle() {return title;}
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() {return description;}
 
-    public String getImages() {
-        return images;
-    }
+    public String getImages() {return images;}
 
+    public Double getLatitude() {return latitude;}
 
-    public boolean isPurchased() {
-        return isPurchased;
-    }
-
-    public String getKey() {return key;}
-
-    public double getLatitude() {return latitude;}
-
-    public double getLongitude() {return longitude;}
+    public Double getLongitude() {return longitude;}
 
     public String getAddress() {return address;}
 
+    public Boolean getPurchased() {return isPurchased;}
+
     public String getDate() {return date;}
+
+    public String getKey() {return key;}
 
     public void setKey(String key) {
         this.key = key;
