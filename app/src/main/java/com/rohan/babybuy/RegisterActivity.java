@@ -36,7 +36,7 @@ import com.rohan.babybuy.db.User;
 public class RegisterActivity extends AppCompatActivity {
     private TextView log;
     private Button btnRegister;
-    private EditText textBoxUsername, textBoxEmail, textBoxpass;
+    private EditText textBoxUsername, textBoxEmail, textBoxpass,txtBoxRePassword;
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
@@ -49,11 +49,12 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         getSupportActionBar().hide();
 
-        log = (TextView) findViewById(R.id.txtLoginLink);
-        btnRegister = (Button) findViewById(R.id.btnRegister);
-        textBoxUsername = (EditText) findViewById(R.id.txtBoxUsername);
-        textBoxEmail = (EditText) findViewById(R.id.txtBoxEmail);
-        textBoxpass = (EditText) findViewById(R.id.txtBoxPassword);
+        log = findViewById(R.id.txtLoginLink);
+        btnRegister = findViewById(R.id.btnRegister);
+        textBoxUsername = findViewById(R.id.txtBoxUsername);
+        textBoxEmail = findViewById(R.id.txtBoxEmail);
+        textBoxpass = findViewById(R.id.txtBoxPassword);
+        txtBoxRePassword = findViewById(R.id.txtBoxRePassword);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("user");
@@ -69,44 +70,47 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username, email, password, hashPassword;
+                String username, email, password,rePassword;
                 username = textBoxUsername.getText().toString().trim();
                 email = textBoxEmail.getText().toString().trim();
                 password = textBoxpass.getText().toString().trim();
-                userId = username;
+                rePassword = txtBoxRePassword.getText().toString().trim();
 
                 if (!username.isEmpty()) {
                     if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                         if (!password.isEmpty()) {
-                            firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        User user = new User(username, email, password);
-                                        databaseReference.addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                databaseReference.child(userId).setValue(user);
-                                            }
+                            if(password.equals(rePassword)){
+                                firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            FirebaseUser verifyUser = firebaseAuth.getCurrentUser();
+                                            User user = new User(verifyUser.getUid(),username, email, password,"","");
+                                            databaseReference.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    databaseReference.child(verifyUser.getUid()).setValue(user);
+                                                }
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                    Toast.makeText(RegisterActivity.this, "Error: " + error + " occurred!!", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                            verifyUser.sendEmailVerification();
 
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-                                                Toast.makeText(RegisterActivity.this, "Error: " + error + " occurred!!", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                        FirebaseUser verifyUser = firebaseAuth.getCurrentUser();
-                                        verifyUser.sendEmailVerification();
-
-                                        Toast.makeText(RegisterActivity.this, "User created successfully.", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    } else {
-                                        Toast.makeText(RegisterActivity.this, "Failed!!"+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                        textBoxEmail.findFocus();
+                                            Toast.makeText(RegisterActivity.this, "User created successfully. Please check your email to verify.", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            Toast.makeText(RegisterActivity.this, "Failed!!"+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                            textBoxEmail.findFocus();
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }else{
+                                txtBoxRePassword.setError("Confirm password didn't match!!");
+                            }
                         } else {
                             textBoxpass.setError("Password cannot be empty!!");
                         }

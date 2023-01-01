@@ -30,6 +30,12 @@ public class Product implements Serializable {
     @ColumnInfo(name = "address")
     public String address;
 
+    @ColumnInfo(name = "price")
+    public String price;
+
+    @ColumnInfo(name = "user_id")
+    public String user_id;
+
     @ColumnInfo(name = "isPurchased")
     public Boolean isPurchased;
 
@@ -43,17 +49,18 @@ public class Product implements Serializable {
     public Product() {
     }
 
-    public Product(String title, String description, String images, Double latitude, Double longitude, String address, Boolean isPurchased, String date) {
+    public Product(String user_id, String title, String description, String images, Double latitude, Double longitude, String address, String price, Boolean isPurchased, String date) {
+        this.user_id = user_id;
         this.title = title;
         this.description = description;
         this.images = images;
         this.latitude = latitude;
         this.longitude = longitude;
         this.address = address;
+        this.price = price;
         this.isPurchased = isPurchased;
         this.date = date;
     }
-
 
     public String getTitle() {return title;}
 
@@ -72,6 +79,10 @@ public class Product implements Serializable {
     public String getDate() {return date;}
 
     public String getKey() {return key;}
+
+    public String getPrice() {return price;}
+
+    public String getUser_id() {return user_id;}
 
     public void setKey(String key) {
         this.key = key;

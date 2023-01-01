@@ -30,7 +30,7 @@
         app:layout_constraintTop_toBottomOf="@+id/fragTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/textbox_bg"
         android:elevation="15dp"
         android:src="@drawable/icon_image"
@@ -42,8 +42,9 @@
         app:layout_constraintStart_toStartOf="@+id/imgUpload"
         app:layout_constraintEnd_toEndOf="@+id/imgUpload"
         android:text="Select Image"
+        android:textStyle="bold"
         android:textSize="17sp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="4dp"
         />
     <EditText
         android:id="@+id/txtBoxTitle"
@@ -56,8 +57,23 @@
         android:hint="Title"
         android:background="@drawable/textbox_bg"
         android:backgroundTint="@color/white"
-        android:elevation="15dp"
+        android:elevation="8dp"
         android:layout_marginTop="35dp"
+        android:gravity="center"
+        />
+    <EditText
+        android:id="@+id/txtBoxPrice"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toBottomOf="@+id/txtBoxTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:inputType="text"
+        android:hint="Price"
+        android:background="@drawable/textbox_bg"
+        android:backgroundTint="@color/white"
+        android:elevation="8dp"
+        android:layout_marginTop="12dp"
         android:gravity="center"
         />
 
@@ -65,14 +81,14 @@
         android:id="@+id/txtBoxDescription"
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtBoxTitle"
+        app:layout_constraintTop_toBottomOf="@+id/txtBoxPrice"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:hint="Description..."
         android:background="@drawable/textbox_bg"
-        android:elevation="15dp"
+        android:elevation="8dp"
         android:gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         />
     <EditText
         android:id="@+id/txtBoxLocation"
@@ -80,13 +96,42 @@
         android:layout_height="50dp"
         app:layout_constraintTop_toBottomOf="@+id/txtBoxDescription"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnLocation"
         android:background="@drawable/textbox_bg"
-        android:elevation="15dp"
-        android:layout_marginTop="20dp"
+        android:elevation="5dp"
+        android:layout_marginTop="12dp"
         android:hint="Select location..."
         android:gravity="center"
         android:editable="false"
         />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnLocation"
+        android:layout_width="45dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/img_location"
+        android:backgroundTint="@color/white"
+        android:backgroundTintMode="multiply"
+        android:elevation="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/txtBoxLocation"
+        app:layout_constraintTop_toBottomOf="@id/txtBoxDescription"
+        />
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/cbIsPurchased"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/txtBoxLocation"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="Mark as Purchased"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#605E5E"
+        android:layout_marginTop="8dp"
+        android:buttonTint="@color/blue"
+        />
+
     <TextView
         android:id="@+id/txtLatitude"
         android:layout_width="wrap_content"
@@ -105,23 +150,10 @@
         />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnLocation"
-        android:layout_width="45dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/img_location"
-        android:backgroundTint="@color/white"
-        android:backgroundTintMode="multiply"
-        android:elevation="15dp"
-        app:layout_constraintEnd_toEndOf="@id/txtBoxDescription"
-        app:layout_constraintStart_toEndOf="@id/txtBoxLocation"
-        app:layout_constraintTop_toBottomOf="@id/txtBoxDescription" />
-
-    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnSave"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/txtBoxDescription"
+        app:layout_constraintTop_toBottomOf="@id/txtBoxLocation"
         app:layout_constraintStart_toStartOf="@id/txtBoxDescription"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnCancel"
@@ -130,13 +162,14 @@
         android:text="Save"
         android:textColor="@color/white"
         android:textSize="18sp"
+        android:layout_marginTop="25dp"
         />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnCancel"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/txtBoxDescription"
+        app:layout_constraintTop_toBottomOf="@id/txtBoxLocation"
         app:layout_constraintStart_toEndOf="@id/btnSave"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -145,6 +178,7 @@
         android:text="Cancel"
         android:textColor="@color/white"
         android:textSize="18sp"
+        android:layout_marginTop="25dp"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

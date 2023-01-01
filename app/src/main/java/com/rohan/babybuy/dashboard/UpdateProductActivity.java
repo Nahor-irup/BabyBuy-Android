@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +27,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -40,15 +43,18 @@ import java.util.HashMap;
 
 public class UpdateProductActivity extends AppCompatActivity {
     private ImageView updateImage;
-    private Button btnUpdate,btnCancel,btnLocation;
-    private EditText updateTitle, updateDesc,txtBoxUpdateLocation;
+    private Button btnUpdate,btnCancel,btnLocation,btnShare;
+    private EditText updateTitle, updateDesc,txtBoxUpdateLocation,txtBoxUpdatePrice;
     private TextView txtLatitude,txtLongitude;
     private String title, desc;
-    private String key,oldImageUrl;
+    private String key,oldImageUrl,removeOldImg;
     private String imageUrl = "";
     private Uri uri;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
+    private CheckBox cbUpdateIsPurchased;
+    private Boolean isPurchased;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +66,14 @@ public class UpdateProductActivity extends AppCompatActivity {
         updateTitle = findViewById(R.id.txtBoxUpdateTitle);
         updateDesc = findViewById(R.id.txtBoxUpdateDescription);
         txtBoxUpdateLocation = findViewById(R.id.txtBoxUpdateLocation);
+        txtBoxUpdatePrice = findViewById(R.id.txtBoxUpdatePrice);
         btnUpdate = findViewById(R.id.btnUpdate);
         btnCancel = findViewById(R.id.btnCancel);
         btnLocation = findViewById(R.id.btnLocation);
         txtLatitude = findViewById(R.id.txtUpdateLatitude);
         txtLongitude = findViewById(R.id.txtUpdateLongitude);
+        cbUpdateIsPurchased = findViewById(R.id.cbUpdateIsPurchased);
+        firebaseAuth = FirebaseAuth.getInstance();
 
 
         Bundle bundle = getIntent().getExtras();
@@ -76,6 +85,11 @@ public class UpdateProductActivity extends AppCompatActivity {
             updateDesc.setText(bundle.getString("Description"));
             key = bundle.getString("Key");
             oldImageUrl = bundle.getString("Image");
+            txtBoxUpdateLocation.setText(bundle.getString("Address"));
+            txtBoxUpdatePrice.setText(bundle.getString("Price"));
+            txtLatitude.setText(bundle.getString("Latitude"));
+            txtLongitude.setText(bundle.getString("Longitude"));
+            cbUpdateIsPurchased.setChecked(bundle.getBoolean("isPurchased"));
         }
         databaseReference = FirebaseDatabase.getInstance().getReference("product").child(key);
 
@@ -135,14 +149,16 @@ public class UpdateProductActivity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 101&& resultCode ==RESULT_OK) {
-//            Intent data = result.getData();
             uri = data.getData();
             updateImage.setImageURI(uri);
+            removeOldImg = oldImageUrl;
+            oldImageUrl = "";
         }else if(requestCode==301 && resultCode==202){
             txtBoxUpdateLocation.setText(data.getStringExtra("address"));
             txtLatitude.setText(data.getStringExtra("latitude"));
@@ -182,12 +198,10 @@ public class UpdateProductActivity extends AppCompatActivity {
         builder.setView(R.layout.progress_layout);
         AlertDialog dialog = builder.create();
         dialog.show();
-        String address,currentDate,lat,lon;
+        String address,price,currentDate,lat,lon;
         Double latitude,longitude;
         title = updateTitle.getText().toString();
         desc = updateDesc.getText().toString();
-//        latitude = Double.valueOf(txtLatitude.getText().toString());
-//        longitude = Double.valueOf(txtLongitude.getText().toString());
         lat = txtLatitude.getText().toString();
         lon = txtLongitude.getText().toString();
         if(!lat.equals("")&&!lon.equals("")){
@@ -198,21 +212,23 @@ public class UpdateProductActivity extends AppCompatActivity {
             longitude = 0.0;
         }
         address = txtBoxUpdateLocation.getText().toString();
-        Boolean isPurchased = false;
+        price = txtBoxUpdatePrice.getText().toString();
+        isPurchased = cbUpdateIsPurchased.isChecked();
         currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
         if(imageUrl.equals("")){
             imageUrl=oldImageUrl;
         }
 
+        FirebaseUser user = firebaseAuth.getCurrentUser();
 
-        Product product = new Product(title, desc, imageUrl,latitude,longitude ,address, isPurchased,currentDate);
+        Product product = new Product(user.getUid(),title, desc, imageUrl,latitude,longitude ,address,price, isPurchased,currentDate);
 
         databaseReference.setValue(product).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
                     if(uri!=null){
-                        if(!oldImageUrl.equals("")){
+                        if(!removeOldImg.equals("")){
                             StorageReference reference = FirebaseStorage.getInstance().getReferenceFromUrl(oldImageUrl);
                             reference.delete();
                         }

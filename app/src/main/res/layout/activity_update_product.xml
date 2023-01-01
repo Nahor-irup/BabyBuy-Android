@@ -30,7 +30,7 @@
         app:layout_constraintTop_toBottomOf="@+id/fragUpdateTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/textbox_bg"
         android:elevation="20dp"
         android:src="@drawable/icon_image"
@@ -43,7 +43,8 @@
         app:layout_constraintEnd_toEndOf="@+id/imgUpdate"
         android:text="Select Image"
         android:textSize="17sp"
-        android:layout_marginTop="3dp"
+        android:textStyle="bold"
+        android:layout_marginTop="4dp"
         />
     <EditText
         android:id="@+id/txtBoxUpdateTitle"
@@ -56,23 +57,37 @@
         android:hint="Title"
         android:background="@drawable/textbox_bg"
         android:backgroundTint="@color/white"
-        android:elevation="15dp"
+        android:elevation="8dp"
         android:layout_marginTop="35dp"
         android:gravity="center"
         />
-
+    <EditText
+        android:id="@+id/txtBoxUpdatePrice"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toBottomOf="@+id/txtBoxUpdateTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:inputType="text"
+        android:hint="Price"
+        android:background="@drawable/textbox_bg"
+        android:backgroundTint="@color/white"
+        android:elevation="8dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        />
     <EditText
         android:id="@+id/txtBoxUpdateDescription"
         android:layout_width="match_parent"
         android:layout_height="120dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtBoxUpdateTitle"
+        app:layout_constraintTop_toBottomOf="@+id/txtBoxUpdatePrice"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:hint="Description..."
         android:background="@drawable/textbox_bg"
-        android:elevation="15dp"
+        android:elevation="8dp"
         android:gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         />
     <EditText
         android:id="@+id/txtBoxUpdateLocation"
@@ -81,8 +96,8 @@
         app:layout_constraintTop_toBottomOf="@+id/txtBoxUpdateDescription"
         app:layout_constraintStart_toStartOf="parent"
         android:background="@drawable/textbox_bg"
-        android:elevation="15dp"
-        android:layout_marginTop="20dp"
+        android:elevation="5dp"
+        android:layout_marginTop="12dp"
         android:hint="Select location..."
         android:gravity="center"
         android:editable="false"
@@ -91,7 +106,7 @@
         android:id="@+id/btnLocation"
         android:layout_width="45dp"
         android:layout_height="50dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/img_location"
         android:backgroundTint="@color/white"
         android:backgroundTintMode="multiply"
@@ -99,6 +114,19 @@
         app:layout_constraintEnd_toEndOf="@id/txtBoxUpdateDescription"
         app:layout_constraintStart_toEndOf="@id/txtBoxUpdateLocation"
         app:layout_constraintTop_toBottomOf="@id/txtBoxUpdateDescription" />
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/cbUpdateIsPurchased"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/txtBoxUpdateLocation"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="Mark as Purchased"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#605E5E"
+        android:layout_marginTop="8dp"
+        android:buttonTint="@color/blue"
+        />
     <TextView
         android:id="@+id/txtUpdateLatitude"
         android:layout_width="wrap_content"
@@ -119,8 +147,8 @@
         android:id="@+id/btnUpdate"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/txtBoxUpdateDescription"
-        app:layout_constraintStart_toStartOf="@id/txtBoxUpdateDescription"
+        app:layout_constraintTop_toBottomOf="@id/txtBoxUpdateLocation"
+        app:layout_constraintStart_toStartOf="@id/txtBoxUpdateLocation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnCancel"
         android:background="@drawable/edittext_bg"
@@ -128,12 +156,13 @@
         android:text="Update"
         android:textColor="@color/white"
         android:textSize="18sp"
+        android:layout_marginTop="25dp"
         />
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnCancel"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/txtBoxUpdateDescription"
+        app:layout_constraintTop_toBottomOf="@id/txtBoxUpdateLocation"
         app:layout_constraintStart_toEndOf="@id/btnUpdate"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -142,6 +171,7 @@
         android:text="Cancel"
         android:textColor="@color/white"
         android:textSize="18sp"
+        android:layout_marginTop="25dp"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +29,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -45,12 +48,14 @@ import java.util.Date;
 public class AddProductActivity extends AppCompatActivity {
     private Button btnSave, btnCancel, btnLocation;
     private ImageView uploadImage;
-    private EditText txtBoxTitle, txtBoxDescription, txtBoxLocation;
+    private EditText txtBoxTitle, txtBoxDescription, txtBoxLocation, txtBoxPrice;
     private TextView txtLatitude, txtLongitude;
     private Uri uri;
     private String imageUrl = "";
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
+    private FirebaseAuth firebaseAuth;
+    private CheckBox cbIsPurchased;
 
 
     @Override
@@ -67,9 +72,12 @@ public class AddProductActivity extends AppCompatActivity {
         txtBoxTitle = findViewById(R.id.txtBoxTitle);
         txtBoxDescription = findViewById(R.id.txtBoxDescription);
         txtBoxLocation = findViewById(R.id.txtBoxLocation);
+        txtBoxPrice = findViewById(R.id.txtBoxPrice);
         txtLatitude = findViewById(R.id.txtLatitude);
         txtLongitude = findViewById(R.id.txtLongitude);
+        cbIsPurchased = findViewById(R.id.cbIsPurchased);
         firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = firebaseDatabase.getReference("product");
 
 
@@ -79,12 +87,9 @@ public class AddProductActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent photoPicker = new Intent(Intent.ACTION_PICK);
                 photoPicker.setType("image/*");
-//                activityResultLauncher.launch(photoPicker);
                 startActivityForResult(Intent.createChooser(photoPicker, "Please select an image."), 101);
             }
         });
-
-//        loadFromSharedPref();
 
         //save button action
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +100,6 @@ public class AddProductActivity extends AppCompatActivity {
                 } else {
                     saveData();
                 }
-//                clearSharedPref();
                 setResult(2001);
             }
         });
@@ -126,7 +130,7 @@ public class AddProductActivity extends AppCompatActivity {
                     Bundle params = new Bundle();
                     params.putDouble("latitude", latitude);
                     params.putDouble("longitude", longitude);
-//                    params.putString("page","product_add");
+                    params.putString("page","product_add");
                     intent.putExtras(params);
                 }
 
@@ -139,7 +143,6 @@ public class AddProductActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 101 && resultCode == RESULT_OK) {
-//            Intent data = result.getData();
             uri = data.getData();
             uploadImage.setImageURI(uri);
         } else if (requestCode == 102 && resultCode == 202) {
@@ -182,12 +185,13 @@ public class AddProductActivity extends AppCompatActivity {
     }
 
     public void uploadData() {
-        String title, desc, address, currentDate,lat,lon;
+        String title, desc, address,price, currentDate,lat,lon;
         Double latitude, longitude;
         title = txtBoxTitle.getText().toString();
         desc = txtBoxDescription.getText().toString();
         address = txtBoxLocation.getText().toString();
-        Boolean isPurchased = false;
+        price = txtBoxPrice.getText().toString();
+        Boolean isPurchased = cbIsPurchased.isChecked();
         currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
         lat = txtLatitude.getText().toString();
         lon = txtLongitude.getText().toString();
@@ -199,21 +203,22 @@ public class AddProductActivity extends AppCompatActivity {
             longitude = 0.0;
         }
 
+        FirebaseUser user = firebaseAuth.getCurrentUser();
 
-        Product product = new Product(title, desc, imageUrl, latitude, longitude, address, isPurchased, currentDate);
+        Product product = new Product(user.getUid(),title, desc, imageUrl, latitude, longitude, address,price, isPurchased, currentDate);
 
         databaseReference.child(currentDate).setValue(product).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(AddProductActivity.this, "Product saved successfully.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddProductActivity.this, "Product added successfully.", Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(AddProductActivity.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddProductActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

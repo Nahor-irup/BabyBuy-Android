@@ -22,34 +22,39 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 import com.rohan.babybuy.LoginActivity;
 import com.rohan.babybuy.R;
 import com.rohan.babybuy.dashboard.recyclerview.HomeRecyclerViewAdapter;
 import com.rohan.babybuy.db.Product;
+import com.rohan.babybuy.db.User;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class HomeFragment extends Fragment implements HomeRecyclerViewAdapter.IHomeRecyclerAdapterListener {
 
     private FloatingActionButton btnAdd;
     private RecyclerView homeRecyclerView;
-    private ImageView img;
+    private ImageView imgBody,imgHomeProfile;
     private TextView txtUsername;
-    private DatabaseReference databaseReference;
     private ValueEventListener eventListener;
     private List<Product> productList = new ArrayList<>();
     private SearchView searchView;
     private HomeRecyclerViewAdapter adapter;
+    private FirebaseDatabase firebaseDatabase;
     private FirebaseAuth firebaseAuth;
+    private DatabaseReference databaseReference;
+    private FirebaseStorage firebaseStorage;
 
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
@@ -68,39 +73,58 @@ public class HomeFragment extends Fragment implements HomeRecyclerViewAdapter.IH
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         btnAdd = view.findViewById(R.id.btnAdd);
         homeRecyclerView = view.findViewById(R.id.recycler_view_home);
-        img = view.findViewById(R.id.imgMom);
+        imgBody = view.findViewById(R.id.imgMom);
+        imgHomeProfile = view.findViewById(R.id.imgHomeProfile);
         txtUsername = view.findViewById(R.id.txtUsername);
         searchView = view.findViewById(R.id.search);
         firebaseAuth = FirebaseAuth.getInstance();
+
         return view;
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         searchView.clearFocus();
-//        getUsername();
         setUpHomeRecyclerView();
 
+        //button add action
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startAddProductActivity();
             }
         });
+
+        getData();
     }
 
-    private void getUsername(){
-//        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Login_pref",Context.MODE_PRIVATE);
-//        txtUsername.setText(sharedPreferences.getString("user_name",""));
-        String username = firebaseAuth.getCurrentUser().getUid();
-        txtUsername.setText(username);
+    private void getData() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("user");
+
+        reference.orderByChild("id").equalTo(firebaseAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot data: dataSnapshot.getChildren()){
+                    String username=data.child("username").getValue().toString();
+                    String img=data.child("images").getValue().toString();
+                    if(!img.equals("")){
+                        Glide.with(getContext()).load(img).into(imgHomeProfile);
+                    }
+                    txtUsername.setText(username);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
-    private void setUpHomeRecyclerView(){
+    private void setUpHomeRecyclerView() {
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(),1);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireActivity(), 1);
         homeRecyclerView.setLayoutManager(gridLayoutManager);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
@@ -109,7 +133,7 @@ public class HomeFragment extends Fragment implements HomeRecyclerViewAdapter.IH
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        adapter = new HomeRecyclerViewAdapter(requireActivity(),productList,this);
+        adapter = new HomeRecyclerViewAdapter(requireActivity(), productList, this);
         homeRecyclerView.setAdapter(adapter);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("product");
@@ -119,17 +143,20 @@ public class HomeFragment extends Fragment implements HomeRecyclerViewAdapter.IH
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 productList.clear();
-                for(DataSnapshot itemSnapshot: snapshot.getChildren()){
+                for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
                     Product product = itemSnapshot.getValue(Product.class);
                     product.setKey(itemSnapshot.getKey());
-                    productList.add(product);
+                    if(!product.isPurchased&&firebaseAuth.getCurrentUser().getUid().equals(product.getUser_id())){
+                        productList.add(product);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
-                if(!productList.isEmpty()){
-                    img.setVisibility(View.INVISIBLE);
+                if (!productList.isEmpty()) {
+                    imgBody.setVisibility(View.INVISIBLE);
                 }
-                adapter.notifyDataSetChanged();
                 dialog.dismiss();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 dialog.dismiss();
@@ -150,58 +177,27 @@ public class HomeFragment extends Fragment implements HomeRecyclerViewAdapter.IH
         });
     }
 
-    private List<Product> getProductList(){
-        List<Product> products = new ArrayList<>();
-
-        Product product1 = new Product();
-        product1.title = "Product1";
-        product1.description = "lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem ";
-        products.add(product1);
-
-        Product product2 = new Product();
-        product2.title = "Product2";
-        product2.description = "lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem ";
-        products.add(product2);
-
-        Product product3 = new Product();
-        product3.title = "Product3";
-        product3.description = "lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem ";
-        products.add(product3);
-
-        Product product4 = new Product();
-        product4.title = "Product4";
-        product4.description = "lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem ";
-        products.add(product4);
-
-        Product product5 = new Product();
-        product5.title = "Product5";
-        product5.description = "lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem ";
-        products.add(product5);
-
-        return products;
-    }
-
-    private void startAddProductActivity(){
+    private void startAddProductActivity() {
         Intent intent = new Intent(requireActivity(), AddProductActivity.class);
-        startActivityForResult(intent,1001);
+        startActivityForResult(intent, 1001);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode==1001){
+        if (requestCode == 1001) {
             //add product
-            if(resultCode==2001){
+            if (resultCode == 2001) {
                 //add success
 //                Toast.makeText(requireActivity(), "success 2001", Toast.LENGTH_SHORT).show();
-            }else{
+            } else {
                 //add failed
 //                Toast.makeText(requireActivity(), "failed 2001", Toast.LENGTH_SHORT).show();
             }
-        }else if(requestCode==1002){
+        } else if (requestCode == 1002) {
             //detail page
-            if(resultCode==2002){
+            if (resultCode == 2002) {
 //                Toast.makeText(requireActivity(), "202 image", Toast.LENGTH_SHORT).show();
             }
         }
@@ -209,15 +205,15 @@ public class HomeFragment extends Fragment implements HomeRecyclerViewAdapter.IH
 
     @Override
     public void onItemClicked(Product product) {
-        Intent intent = new Intent(requireActivity(),DetailPageActivity.class);
-        intent.putExtra("product_data",product);
-        startActivityForResult(intent,1002);
+        Intent intent = new Intent(requireActivity(), DetailPageActivity.class);
+        intent.putExtra("product_data", product);
+        startActivityForResult(intent, 1002);
     }
 
-    public void searchList(String text){
+    public void searchList(String text) {
         ArrayList<Product> searchList = new ArrayList<>();
-        for(Product product:productList){
-            if(product.title.toLowerCase().contains(text.toLowerCase())){
+        for (Product product : productList) {
+            if (product.title.toLowerCase().contains(text.toLowerCase())) {
                 searchList.add(product);
             }
         }

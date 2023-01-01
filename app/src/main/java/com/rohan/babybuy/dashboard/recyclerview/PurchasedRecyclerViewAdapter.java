@@ -17,12 +17,13 @@ import com.rohan.babybuy.db.Product;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolder> {
+public class PurchasedRecyclerViewAdapter extends RecyclerView.Adapter<PurchasedRecyclerViewHolder> {
     private Context context;
     private List<Product> products;
-    private IHomeRecyclerAdapterListener listener;
+    private PurchasedRecyclerViewAdapter.IPurchasedRecyclerAdapterListener listener;
 
-    public HomeRecyclerViewAdapter(Context context, List<Product> products, IHomeRecyclerAdapterListener listener) {
+
+    public PurchasedRecyclerViewAdapter(Context context, List<Product> products, IPurchasedRecyclerAdapterListener listener) {
         this.context = context;
         this.products = products;
         this.listener = listener;
@@ -30,29 +31,29 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
 
     @NonNull
     @Override
-    public HomeRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PurchasedRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view =layoutInflater.inflate(R.layout.item_product_layout,parent,false);
-        return new HomeRecyclerViewHolder(view);
+        View view =layoutInflater.inflate(R.layout.purchased_product_layout,parent,false);
+
+        return new PurchasedRecyclerViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HomeRecyclerViewHolder holder, int position) {
-
+    public void onBindViewHolder(@NonNull PurchasedRecyclerViewHolder holder, int position) {
 
         Product product = products.get(position);
 //        holder.getProductImage().setImageDrawable(ContextCompat.getDrawable(context,R.drawable.mother_baby));
         if(!product.getImages().equals("")){
-            Glide.with(context).load(product.getImages()).into(holder.getProductImage());
+            Glide.with(context).load(product.getImages()).into(holder.getIvProduct());
         }
-        holder.getProductTitle().setText(product.title);
-        holder.getProductDescription().setText(product.description);
+        holder.getTxtTitle().setText(product.title);
+        holder.getTxtDescription().setText(product.description);
         holder.getProductPrice().setText(product.price);
-        holder.getProductDate().setText(product.getDate().substring(0,10));
+        holder.getTxtDate().setText(product.getDate().substring(0,10));
 
         product.key = products.get(holder.getAdapterPosition()).getKey();
 
-        holder.getClRootLayout().setOnClickListener(new View.OnClickListener() {
+        holder.getClPurchasedLayout().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                Toast.makeText(context, "Product at "+holder.getAdapterPosition()+" position is clicked", Toast.LENGTH_SHORT).show();
@@ -65,13 +66,12 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
     public int getItemCount() {
         return products.size();
     }
-
     public void searchDataList(ArrayList<Product> searchList){
         products = searchList;
         notifyDataSetChanged();
     }
 
-    public interface IHomeRecyclerAdapterListener{
+    public interface IPurchasedRecyclerAdapterListener{
         void onItemClicked(Product product);
     }
 }

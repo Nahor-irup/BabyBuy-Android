@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/item_root_layout"
+    android:id="@+id/item_purchased_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/blue_border"
-    android:layout_marginBottom="12dp"
-    android:elevation="2dp">
+    android:layout_marginBottom="12dp">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline1"
@@ -19,7 +18,7 @@
         />
 
     <ImageView
-        android:id="@+id/productImage"
+        android:id="@+id/purchasedImage"
         android:layout_width="99dp"
         android:layout_height="82dp"
         android:scaleType="fitCenter"
@@ -40,7 +39,7 @@
         android:padding="6dp"
         >
         <TextView
-            android:id="@+id/productTitle"
+            android:id="@+id/purchasedTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
@@ -53,10 +52,10 @@
             android:gravity="center"
             />
         <TextView
-            android:id="@+id/productDescription"
+            android:id="@+id/purchasedDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/productTitle"
+            app:layout_constraintTop_toBottomOf="@+id/purchasedTitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem "
@@ -67,11 +66,12 @@
             android:layout_marginTop="4dp"
             android:layout_marginStart="8dp"
             />
+
         <TextView
             android:id="@+id/productRs"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/productDescription"
+            app:layout_constraintTop_toBottomOf="@+id/purchasedDescription"
             app:layout_constraintStart_toStartOf="parent"
             android:textColor="#272727"
             android:text="Rs :"
@@ -83,9 +83,9 @@
             android:id="@+id/productPrice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/productDescription"
+            app:layout_constraintTop_toBottomOf="@+id/purchasedDescription"
             app:layout_constraintStart_toEndOf="@id/productRs"
-            app:layout_constraintEnd_toStartOf="@id/productDate"
+            app:layout_constraintEnd_toStartOf="@id/purchasedDate"
             android:textColor="#272727"
             tools:text="Price"
             android:textSize="16dp"
@@ -93,10 +93,10 @@
             android:layout_marginStart="3dp"
             />
         <TextView
-            android:id="@+id/productDate"
+            android:id="@+id/purchasedDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/productDescription"
+            app:layout_constraintTop_toBottomOf="@+id/purchasedDescription"
             app:layout_constraintEnd_toEndOf="parent"
             android:textColor="#272727"
             tools:text="Date:"

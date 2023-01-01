@@ -1,147 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/topConstraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".dashboard.DetailPageActivity"
     android:background="@drawable/fragment_bg"
-    android:backgroundTintMode="multiply"
     android:backgroundTint="@color/gray10"
-    android:padding="20dp">
+    android:backgroundTintMode="multiply"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".dashboard.DetailPageActivity">
 
     <TextView
         android:id="@+id/txtDetailPage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="Detail Page"
-        android:textSize="26sp"
-        android:textColor="@color/white"
-        android:textStyle="bold"
         android:layout_marginTop="15dp"
-        />
+        android:text="Detail Page"
+        android:textColor="@color/white"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/detailPageImage"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        app:layout_constraintTop_toBottomOf="@+id/txtDetailPage"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/textbox_bg"
-        android:elevation="20dp"
+        android:elevation="4dp"
         android:src="@drawable/icon_image"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtDetailPage" />
 
-    <LinearLayout
-        android:id="@+id/line1"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/titleConstraint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/detailPageImage"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="@drawable/textbox_bg"
         android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        android:paddingBottom="8dp"
-        android:elevation="10dp">
+        android:background="@drawable/textbox_bg"
+        android:elevation="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/detailPageImage"
+        tools:layout_editor_absoluteX="10dp">
 
         <TextView
             android:id="@+id/detailPageTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            tools:text="Title"
+            android:paddingStart="10dp"
+            android:paddingTop="8dp"
+            android:textColor="#272727"
             android:textSize="21sp"
             android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Title" />
+
+
+        <TextView
+            android:id="@+id/detailPageRs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
             android:textColor="#272727"
-            />
+            android:textSize="21sp"
+            android:background="@drawable/textbox_bg"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/detailPageTitle"
+            android:text="Rs." />
+        <TextView
+            android:id="@+id/detailPagePrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="45dp"
+            android:textColor="#272727"
+            android:textSize="21sp"
+            android:background="@drawable/textbox_bg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/detailPageRs"
+            app:layout_constraintTop_toBottomOf="@id/detailPageTitle"
+            tools:text="Price" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/descConstraint"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:elevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleConstraint"
+        tools:layout_editor_absoluteX="4dp">
+        <TextView
+            android:id="@+id/detailPageDescription"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingStart="10dp"
+            android:textColor="#272727"
+            android:textSize="21sp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/textbox_bg"
+            tools:layout_editor_absoluteX="53dp"
+            tools:text="Description Description Description Description Description Description Description Description Description Description " />
+
         <TextView
             android:id="@+id/detailPageDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="Dec 20 30"
-            android:textSize="19sp"
-            android:textColor="#272727"
-            android:layout_marginStart="10dp"
-            />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/line1"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="@drawable/textbox_bg"
-        android:layout_marginTop="4dp"
-        android:orientation="vertical"
-        android:paddingBottom="8dp"
-        android:elevation="10dp">
-        <TextView
-            android:id="@+id/detailPageDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Description Description Description Description Description Description Description Description Description Description "
-            android:textSize="21sp"
-            android:textColor="#272727"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
+            android:paddingStart="10dp"
             android:layout_marginTop="4dp"
-            />
+            android:textColor="#272727"
+            android:background="@drawable/textbox_bg"
+            android:textSize="19sp"
+            app:layout_constraintTop_toBottomOf="@id/detailPageDescription"
+            tools:text="Dec 20 30" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnViewOnMap"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
-            android:text="View on Map"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
             android:background="@drawable/textbox_bg"
             android:backgroundTint="@color/blue"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:layout_marginTop="15dp"
             android:drawableEnd="@drawable/icon_map"
-            android:textAllCaps="false"
-            android:layout_gravity="center"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            />
+            android:text="View on Map"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/detailPageDate" />
 
-    </LinearLayout>
-
-    <com.github.clans.fab.FloatingActionMenu
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:menu_fab_size="normal"
-        app:menu_icon="@drawable/icon_list"
-        app:menu_openDirection="up"
-        app:menu_showShadow="true"
-        app:menu_colorNormal="@color/blue"
-        app:menu_colorPressed="@color/blue200"
-        >
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/btnEdit"
+        <com.github.clans.fab.FloatingActionMenu
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_edit"
-            app:fab_showShadow="true"
-            app:fab_colorNormal="@color/green"
-            app:fab_colorPressed="@color/green100"
-            app:fab_size="mini"/>
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/btnDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_delete"
-            app:fab_showShadow="true"
-            app:fab_colorNormal="@color/red200"
-            app:fab_size="mini"/>
-    </com.github.clans.fab.FloatingActionMenu>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:menu_colorNormal="@color/blue"
+            app:menu_colorPressed="@color/blue200"
+            app:menu_fab_size="normal"
+            app:menu_icon="@drawable/icon_list"
+            app:menu_openDirection="up"
+            app:menu_showShadow="true">
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/btnEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_edit"
+                app:fab_colorNormal="@color/green"
+                app:fab_colorPressed="@color/green100"
+                app:fab_showShadow="true"
+                app:fab_size="mini" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/btnDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_delete"
+                app:fab_colorNormal="@color/red200"
+                app:fab_colorPressed="@color/red"
+                app:fab_showShadow="true"
+                app:fab_size="mini" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/btnShare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_share"
+                app:fab_colorNormal="@color/teal_200"
+                app:fab_colorPressed="@color/blue200"
+                app:fab_showShadow="true"
+                app:fab_size="mini" />
+        </com.github.clans.fab.FloatingActionMenu>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
