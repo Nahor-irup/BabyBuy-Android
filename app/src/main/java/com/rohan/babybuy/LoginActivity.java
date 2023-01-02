@@ -28,6 +28,7 @@ import com.google.firebase.auth.EmailAuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.rohan.babybuy.dashboard.DashboardActivity;
+import com.rohan.babybuy.dashboard.GetStarted.GetStartedActivity;
 import com.rohan.babybuy.db.BabyBuyDatabase;
 import com.rohan.babybuy.db.User;
 import com.rohan.babybuy.db.UserDao;
@@ -78,8 +79,13 @@ public class LoginActivity extends AppCompatActivity {
                             public void onSuccess(AuthResult authResult) {
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
                                 if(user.isEmailVerified()){
+                                    Intent intent;
                                     Toast.makeText(LoginActivity.this, "Login Successfully.", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(LoginActivity.this,DashboardActivity.class);
+                                    if(!viewWalkthrough()){
+                                        intent = new Intent(LoginActivity.this, GetStartedActivity.class);
+                                    }else{
+                                        intent = new Intent(LoginActivity.this,DashboardActivity.class);
+                                    }
                                     startActivity(intent);
                                     finish();
                                 }else{
@@ -146,4 +152,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    public Boolean viewWalkthrough(){
+        SharedPreferences sharedPreferences = getSharedPreferences("walkthrough",Context.MODE_PRIVATE);
+        Boolean viewWalkedthrough = sharedPreferences.getBoolean("viewed",false);
+
+        return viewWalkedthrough;
+    }
+
 }

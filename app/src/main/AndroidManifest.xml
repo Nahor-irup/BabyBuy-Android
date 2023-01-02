@@ -18,12 +18,14 @@
         android:theme="@style/Theme.BabyBuy"
         tools:targetApi="31">
         <activity
-            android:name=".GetStartedActivity"
-            android:exported="false">
+            android:name=".dashboard.GetStarted.GetStartedActivity"
+            android:exported="true">
+
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

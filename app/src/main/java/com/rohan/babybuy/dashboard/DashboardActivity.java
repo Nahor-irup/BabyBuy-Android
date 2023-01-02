@@ -42,6 +42,7 @@ public class DashboardActivity extends AppCompatActivity {
         replaceFragment(homeFragment);
 
 
+        //button navigation click action
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

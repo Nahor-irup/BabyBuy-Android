@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.rohan.babybuy.dashboard.DashboardActivity;
+import com.rohan.babybuy.dashboard.GetStarted.GetStartedActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
     private ImageView img;
@@ -37,12 +38,23 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     }
 
+    public Boolean viewWalkthrough(){
+        SharedPreferences sharedPreferences = getSharedPreferences("walkthrough",Context.MODE_PRIVATE);
+        Boolean viewWalkedthrough = sharedPreferences.getBoolean("viewed",false);
+
+        return viewWalkedthrough;
+    }
+
     private void checkUserLogin(){
         Intent intent;
         if(firebaseAuth.getCurrentUser()!=null){
-            intent = new Intent(SplashScreenActivity.this, DashboardActivity.class);
+            if(!viewWalkthrough()){
+                intent = new Intent(SplashScreenActivity.this, GetStartedActivity.class);
+            }else{
+                intent = new Intent(SplashScreenActivity.this, DashboardActivity.class);
+            }
         }else {
-            intent = new Intent(SplashScreenActivity.this,LoginActivity.class);
+            intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
         }
         startActivity(intent);
         finish();

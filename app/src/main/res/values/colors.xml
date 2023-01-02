@@ -16,4 +16,12 @@
     <color name="red">#C70000</color>
     <color name="green">#05C305</color>
     <color name="green100">#15E415</color>
+
+    //onboarding colors
+    <color name="background">#F0F4F3</color>
+    <color name="buttontext">#50C2C9</color>
+
+    //indicator color
+    <color name="inactive">#C4C4C4</color>
+    <color name="active">#50C2C9</color>
 </resources>
