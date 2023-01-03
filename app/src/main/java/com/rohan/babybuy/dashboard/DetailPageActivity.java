@@ -57,7 +57,7 @@ public class DetailPageActivity extends AppCompatActivity {
             detailTitle.setText(product.getTitle());
             detailDescription.setText(product.getDescription());
             detailPagePrice.setText(product.getPrice());
-            detailPageDate.setText(product.getDate().substring(0,10));
+            detailPageDate.setText(product.getDate().substring(0,11));
             key = product.getKey();
             imageUrl = product.getImages();
             if (!imageUrl.equals("")) {

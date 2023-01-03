@@ -46,9 +46,9 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
             Glide.with(context).load(product.getImages()).into(holder.getProductImage());
         }
         holder.getProductTitle().setText(product.title);
-        holder.getProductDescription().setText(product.description);
-        holder.getProductPrice().setText(product.price);
-        holder.getProductDate().setText(product.getDate().substring(0,10));
+//        holder.getProductDescription().setText(product.description);
+//        holder.getProductPrice().setText(product.price);
+        holder.getProductDate().setText(product.getDate());
 
         product.key = products.get(holder.getAdapterPosition()).getKey();
 

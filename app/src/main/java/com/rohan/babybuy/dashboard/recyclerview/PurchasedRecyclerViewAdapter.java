@@ -47,9 +47,9 @@ public class PurchasedRecyclerViewAdapter extends RecyclerView.Adapter<Purchased
             Glide.with(context).load(product.getImages()).into(holder.getIvProduct());
         }
         holder.getTxtTitle().setText(product.title);
-        holder.getTxtDescription().setText(product.description);
-        holder.getProductPrice().setText(product.price);
-        holder.getTxtDate().setText(product.getDate().substring(0,10));
+//        holder.getTxtDescription().setText(product.description);
+//        holder.getProductPrice().setText(product.price);
+        holder.getTxtDate().setText(product.getDate());
 
         product.key = products.get(holder.getAdapterPosition()).getKey();
 

@@ -14,9 +14,9 @@ public class HomeRecyclerViewHolder extends RecyclerView.ViewHolder {
 
     private final ImageView productImage;
     private final TextView productTitle;
-    private final TextView productDescription;
+//    private final TextView productDescription;
     private final TextView productDate;
-    private final TextView productPrice;
+//    private final TextView productPrice;
     private ConstraintLayout clRootLayout;
 
     public HomeRecyclerViewHolder(@NonNull View itemView) {
@@ -24,8 +24,8 @@ public class HomeRecyclerViewHolder extends RecyclerView.ViewHolder {
 
         productImage = itemView.findViewById(R.id.productImage);
         productTitle = itemView.findViewById(R.id.productTitle);
-        productDescription = itemView.findViewById(R.id.productDescription);
-        productPrice = itemView.findViewById(R.id.productPrice);
+//        productDescription = itemView.findViewById(R.id.productDescription);
+//        productPrice = itemView.findViewById(R.id.productPrice);
         productDate = itemView.findViewById(R.id.productDate);
         clRootLayout = itemView.findViewById(R.id.item_root_layout);
     }
@@ -38,11 +38,11 @@ public class HomeRecyclerViewHolder extends RecyclerView.ViewHolder {
         return productTitle;
     }
 
-    public TextView getProductDescription() {return productDescription;}
+//    public TextView getProductDescription() {return productDescription;}
 
     public TextView getProductDate() {return productDate;}
 
-    public TextView getProductPrice() {return productPrice;}
+//    public TextView getProductPrice() {return productPrice;}
 
     public ConstraintLayout getClRootLayout() {return clRootLayout;}
 }

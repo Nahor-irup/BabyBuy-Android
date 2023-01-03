@@ -13,18 +13,18 @@ import com.rohan.babybuy.R;
 public class PurchasedRecyclerViewHolder extends RecyclerView.ViewHolder {
     private final ImageView ivProduct;
     private final TextView txtTitle;
-    private final TextView txtDescription;
+//    private final TextView txtDescription;
     private final TextView txtDate;
-    private final TextView productPrice;
+//    private final TextView productPrice;
     private final ConstraintLayout clPurchasedLayout;
 
     public PurchasedRecyclerViewHolder(@NonNull View itemView) {
         super(itemView);
         ivProduct = itemView.findViewById(R.id.purchasedImage);
         txtDate = itemView.findViewById(R.id.purchasedDate);
-        productPrice = itemView.findViewById(R.id.productPrice);
+//        productPrice = itemView.findViewById(R.id.productPrice);
         txtTitle = itemView.findViewById(R.id.purchasedTitle);
-        txtDescription = itemView.findViewById(R.id.purchasedDescription);
+//        txtDescription = itemView.findViewById(R.id.purchasedDescription);
         clPurchasedLayout = itemView.findViewById(R.id.item_purchased_layout);
     }
 
@@ -36,15 +36,15 @@ public class PurchasedRecyclerViewHolder extends RecyclerView.ViewHolder {
         return txtTitle;
     }
 
-    public TextView getTxtDescription() {
-        return txtDescription;
-    }
+//    public TextView getTxtDescription() {
+//        return txtDescription;
+//    }
 
     public TextView getTxtDate() {
         return txtDate;
     }
 
-    public TextView getProductPrice() {return productPrice;}
+//    public TextView getProductPrice() {return productPrice;}
 
     public ConstraintLayout getClPurchasedLayout() {return clPurchasedLayout;}
 }

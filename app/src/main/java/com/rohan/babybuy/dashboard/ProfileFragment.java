@@ -138,6 +138,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 firebaseAuth.signOut();
+                Toast.makeText(requireActivity(), "User Logged out", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(requireActivity(), LoginActivity.class));
                 requireActivity().finish();
             }
